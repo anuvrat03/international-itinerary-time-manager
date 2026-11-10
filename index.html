@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Itinerary Timezone Converter</title>
+    <style>
+        /* Basic styling to make it look clean and mobile-friendly */
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; color: #333; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        textarea { width: 100%; height: 120px; padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #007BFF; color: white; border: none; padding: 10px 15px; margin-top: 10px; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; }
+        button:hover { background-color: #0056b3; }
+        .output { margin-top: 20px; padding: 10px; background: #e9ecef; border-radius: 4px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>International Itinerary Timezone Converter</h2>
+    <p>Paste your itinerary details or flight times below:</p>
+    
+    <!-- This is the text box where you will paste the travel details -->
+    <textarea id="itineraryInput" placeholder="e.g., Flight departs JFK at 18:30 on 15 Nov..."></textarea>
+    
+    <!-- This is the button you will tap to process the times -->
+    <button onclick="convertTimes()">Convert to Local Time</button>
+
+    <h3>Converted Local Times (IST):</h3>
+    <!-- This area will display your converted results -->
+    <div id="resultOutput" class="output">Your converted itinerary will appear here...</div>
+</div>
+
+<script>
+    // JavaScript code will go here in our next step
+    function convertTimes() {
+        let userInput = document.getElementById("itineraryInput").value;
+        document.getElementById("resultOutput").innerText = "You typed: \n" + userInput;
+    }
+</script>
+
+</body>
+</html>
