@@ -1,27 +1,28 @@
-# ✈️ International Itinerary Time Manager
+# ✈️ International Itinerary Time Manager 🏙️
 
-A simple, user-friendly web application designed to convert international travel itineraries, flight details, and schedules into local time based on the user's current location.
-
----
-
-## 🌟 Features
-- **Automatic Time Conversion:** Easily converts foreign travel times to your current local time zone (e.g., IST).
-- **Mobile Friendly:** Built and optimized for viewing and managing on mobile devices.
-- **Easy Paste Input:** Simple text input to paste travel details directly from emails or itinerary documents.
+A sleek, mobile-friendly web application designed to convert international travel itineraries and flight schedules into your local time zone automatically. 
 
 ---
 
-## 🚀 How It Works
-1. Paste the foreign travel itinerary or flight details into the input text area.
-2. Click **Convert to Local Time**.
-3. View the converted schedule adjusted accurately to your local time.
+## 🌟 Key Features
+- **Dynamic Sliding Background:** Smoothly transitions between breathtaking travel destinations and city skylines every few seconds for an immersive experience.
+- **File Upload Support:** Directly select and upload itinerary text files from your mobile storage.
+- **Paste Flexibility:** Option to paste travel details and flight times straight from emails or documents.
+- **Automatic Time Zone Detection:** Instantly recognizes your device's current location and local time zone.
+
+---
+
+## 🚀 How To Use
+1. Open the live web app on your phone.
+2. Either **upload a text file** using Option 1 OR **paste your itinerary details** into the text box under Option 2.
+3. Tap **Show Current Local Time Info** to view your schedule details alongside your current local time zone and date.
 
 ---
 
 ## 🛠️ Built With
-- **HTML5:** Structure of the web page.
-- **CSS3:** Styling and mobile-responsive layout.
-- **JavaScript:** Logic for reading dates, calculating timezone offsets, and outputting converted times.
+- **HTML5 & CSS3:** For responsive layout, smooth animations, and styling.
+- **JavaScript:** For background image rotation, file reading, and time zone calculations.
+- **GitHub Pages:** For hosting the live web app directly from a repository.
 
 ---
 
