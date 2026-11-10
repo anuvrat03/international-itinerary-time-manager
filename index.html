@@ -5,21 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel Itinerary Timezone Converter</title>
     <style>
-        /* Styling to make the page look clean and easy to read on your phone screen */
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; color: #333; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        input[type="file"] { margin-bottom: 15px; width: 100%; }
-        textarea { width: 100%; height: 120px; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #007BFF; color: white; border: none; padding: 10px 15px; margin-top: 10px; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; }
-        button:hover { background-color: #0056b3; }
-        .output { margin-top: 20px; padding: 10px; background: #e9ecef; border-radius: 4px; white-space: pre-wrap; font-family: monospace; }
-        label { font-weight: bold; font-size: 14px; display: block; margin-top: 10px; }
+        /* [COLORFUL THEME START] */
+        
+        /* 1. This part sets a background image for the WHOLE SCREEN. 
+           Instead of a plain white background, it will show an elegant travel scene. */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* A more modern font */
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            color: #333; 
+            
+            /* The image link below is the picture that will show as your background. 
+               We are using a beautiful free travel image from Unsplash. */
+            background-image: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070');
+            background-size: cover; /* This makes the image stretch to fill your phone screen perfectly */
+            background-position: center; /* This centers the image so it doesn't look cut off */
+            background-repeat: no-repeat; /* This prevents the image from tiling like wallpaper */
+        }
+
+        /* 2. This part styles the MAIN WHITE BOX (The container) in the center. */
+        .container { 
+            max-width: 600px; 
+            width: 100%; /* Makes sure the box uses the full width of your phone screen */
+            background: rgba(255, 255, 255, 0.9); /* A slightly transparent white background so you can still see the travel picture behind it */
+            padding: 30px; 
+            border-radius: 12px; /* Makes the corners nice and soft/round */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Adds a subtle shadow to make the box "pop" off the screen */
+            margin: auto;
+        }
+
+        /* 3. This part styles the Main Heading (International Itinerary...) */
+        h2 {
+            color: #007BFF; /* A vibrant blue color for the main title */
+            font-size: 24px;
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        /* This part styles the 'Result:' heading */
+        h3 {
+            color: #333;
+            font-size: 18px;
+            border-bottom: 2px solid #007BFF; /* Adds a nice blue line under 'Result:' */
+            padding-bottom: 5px;
+            margin-top: 25px;
+        }
+
+        /* 4. This styles the text labels above your input boxes. */
+        label { 
+            font-weight: bold; 
+            font-size: 14px; 
+            display: block; 
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        /* 5. This styles the File Upload Button (Option 1). */
+        input[type="file"] { 
+            width: 100%; 
+            margin-bottom: 15px; 
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: white;
+        }
+
+        /* 6. This part styles the big text input box where you paste the itinerary (Option 2). */
+        textarea { 
+            width: 100%; 
+            height: 150px; 
+            padding: 15px; 
+            margin-top: 5px; 
+            border: 1px solid #ddd; /* A subtle light gray border */
+            border-radius: 6px; /* Softly rounded corners */
+            box-sizing: border-box; 
+            font-family: inherit; /* Uses the same modern font we defined earlier */
+            font-size: 14px;
+            background-color: #f9f9f9; /* A light background color inside the text box */
+            resize: vertical; /* On desktop, this lets you drag to resize. On mobile, it doesn't do much. */
+        }
+
+        /* 7. This part styles the MAIN ACTION BUTTON (Show Current Local Time...). */
+        button { 
+            background-color: #007BFF; /* A powerful blue color for the button */
+            color: white; /* Clean white text inside the button */
+            border: none; 
+            padding: 12px 20px; 
+            margin-top: 20px; 
+            border-radius: 6px; /* Match the rounded corners of our text box */
+            cursor: pointer; 
+            font-size: 18px; /* Makes the button text large and clear */
+            width: 100%; 
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s ease; /* Makes the color change smoothly if you tap/hover */
+        }
+        
+        /* This part changes the button color when you tap or hover over it. */
+        button:hover { 
+            background-color: #0056b3; /* A slightly darker blue when the button is active */
+        }
+
+        /* 8. This part styles the gray result box where your output appears. */
+        .output { 
+            margin-top: 20px; 
+            padding: 15px; 
+            background-color: #e3f2fd; /* A soft, light blue background for the result area */
+            border: 1px solid #90caf9; /* A slightly darker blue border around the result box */
+            border-radius: 6px; 
+            white-space: pre-wrap; /* Keeps all the spacing and line breaks in your output */
+            font-family: monospace; /* A classic "coder-style" font for the raw result text */
+            font-size: 13px;
+        }
+        
+        /* [COLORFUL THEME END] */
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>International Itinerary Time Manager</h2>
+    <h2>✈️ International Itinerary Time Manager 🏙️</h2>
     
     <!-- Upload file section -->
     <label for="fileInput">Option 1: Upload a text file (.txt or itinerary document)</label>
@@ -27,7 +138,7 @@
 
     <!-- Paste text section -->
     <label for="itineraryInput">Option 2: Or paste flight details/text below</label>
-    <textarea id="itineraryInput" placeholder="Paste itinerary text here..."></textarea>
+    <textarea id="itineraryInput" placeholder="Paste itinerary text here... e.g., Depart JFK @ 14:30 on 15 Nov"></textarea>
     
     <!-- Action button -->
     <button onclick="showLocalTime()">Show Current Local Time Info</button>
@@ -38,20 +149,18 @@
 </div>
 
 <script>
-    // This function automatically reads a file when you select it from your phone
+    // These functions (the "magic engine") stay the same as before!
     function loadFile(event) {
         let file = event.target.files[0];
         if (!file) return;
 
         let reader = new FileReader();
         reader.onload = function(e) {
-            // Put the text from the uploaded file directly into our text box
             document.getElementById("itineraryInput").value = e.target.result;
         };
         reader.readAsText(file);
     }
 
-    // This function runs when you tap the convert button
     function showLocalTime() {
         let userInput = document.getElementById("itineraryInput").value;
         let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -66,4 +175,3 @@
 
 </body>
 </html>
-
