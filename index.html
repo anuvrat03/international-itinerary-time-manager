@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel Itinerary Timezone Converter</title>
+    
+    <!-- This helper library allows your web app to read PDF files smoothly -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    
     <style>
-        /* Styling for full mobile layout and background slideshow */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
@@ -85,25 +88,26 @@
 <div class="container">
     <h2>✈️ International Itinerary Time Manager 🏙️</h2>
     
-    <!-- Upload multiple files section -->
-    <!-- Notice the word 'multiple' below: this lets you select all 6 files at once on your phone! -->
-    <label for="fileInput">Option 1: Upload text files (You can select all 6 at once!)</label>
-    <input type="file" id="fileInput" multiple onchange="loadMultipleFiles(event)">
+    <!-- File Upload Section accepting PDF and Text files -->
+    <label for="fileInput">Option 1: Upload Itinerary Files (PDF or Text)</label>
+    <input type="file" id="fileInput" multiple accept=".pdf, .txt" onchange="loadMultipleFiles(event)">
 
-    <!-- Paste or view loaded text section -->
-    <label for="itineraryInput">Option 2: Or paste/view combined flight details below</label>
-    <textarea id="itineraryInput" placeholder="Paste itinerary text here or select files above..."></textarea>
+    <!-- Paste or display area -->
+    <label for="itineraryInput">Option 2: Or view/paste extracted text below</label>
+    <textarea id="itineraryInput" placeholder="Upload your PDF tickets/itineraries above..."></textarea>
     
-    <!-- Action button -->
+    <!-- Convert Button -->
     <button onclick="showLocalTime()">Show Current Local Time Info</button>
 
     <h3>Result:</h3>
-    <!-- Output display box -->
     <div id="resultOutput" class="output">Your details will appear here...</div>
 </div>
 
 <script>
-    // List of background images for the slideshow
+    // Tell PDF.js where to find its worker engine
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+    // Background Image Slider
     const images = [
         'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070',
         'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074',
@@ -112,45 +116,55 @@
     ];
 
     let currentIndex = 0;
-
-    // Function to rotate background images smoothly
     function changeBackground() {
         document.body.style.backgroundImage = `url('${images[currentIndex]}')`;
         currentIndex = (currentIndex + 1) % images.length;
     }
-
     changeBackground();
     setInterval(changeBackground, 5000);
 
-    // This new function reads ALL selected files together
-    function loadMultipleFiles(event) {
+    // Function to handle reading multiple PDF or TXT files smoothly
+    async function loadMultipleFiles(event) {
         let files = event.target.files;
         if (!files || files.length === 0) return;
 
+        let textArea = document.getElementById("itineraryInput");
+        textArea.value = "Extracting text from files, please wait...\n\n";
+        
         let combinedText = "";
-        let filesRead = 0;
 
-        // Loop through every file you selected on your phone
         for (let i = 0; i < files.length; i++) {
-            let reader = new FileReader();
-            
-            reader.onload = function(e) {
-                // Add a small divider header for each file so you know which is which
-                combinedText += "=== File: " + files[i].name + " ===\n";
-                combinedText += e.target.result + "\n\n";
-                
-                filesRead++;
-                // Once all files are finished reading, display them inside the text box
-                if (filesRead === files.length) {
-                    document.getElementById("itineraryInput").value = combinedText;
+            let file = files[i];
+            combinedText += "=== File: " + file.name + " ===\n";
+
+            // If the file is a PDF, extract plain text using pdf.js
+            if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
+                try {
+                    let arrayBuffer = await file.arrayBuffer();
+                    let pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    
+                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                        let page = await pdf.getPage(pageNum);
+                        let textContent = await page.getTextContent();
+                        let pageText = textContent.items.map(item => item.str).join(" ");
+                        combinedText += pageText + "\n";
+                    }
+                } catch (error) {
+                    combinedText += "[Could not read PDF text directly]\n";
                 }
-            };
-            
-            reader.readAsText(files[i]);
+            } else {
+                // If standard text file
+                let text = await file.text();
+                combinedText += text + "\n";
+            }
+            combinedText += "\n";
         }
+
+        // Put clean extracted text into the text box without freezing
+        textArea.value = combinedText;
     }
 
-    // Function to show local time zone information
+    // Function to display current time zone
     function showLocalTime() {
         let userInput = document.getElementById("itineraryInput").value;
         let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -159,7 +173,7 @@
         let outputBox = document.getElementById("resultOutput");
         outputBox.innerHTML = "<strong>Your Local Time Zone:</strong> " + userTimeZone + 
                               "<br><strong>Current Local Time:</strong> " + currentLocalTime + 
-                              "<br><br><strong>Combined Itinerary Details:</strong><br>" + userInput;
+                              "<br><br><strong>Extracted Itinerary Details:</strong><br>" + userInput;
     }
 </script>
 
