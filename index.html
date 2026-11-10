@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel Itinerary Timezone Converter</title>
     <style>
-        /* CSS makes the page look modern and adds smooth transitions */
+        /* Styling for full mobile layout and background slideshow */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
@@ -15,15 +15,12 @@
             align-items: center; 
             min-height: 100vh;
             color: #333; 
-            
-            /* Smooth fade animation when background image changes */
             transition: background-image 1.5s ease-in-out;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }
 
-        /* The central semi-transparent white card */
         .container { 
             max-width: 600px; 
             width: 100%; 
@@ -34,21 +31,8 @@
             margin: auto;
         }
 
-        h2 {
-            color: #007BFF;
-            font-size: 22px;
-            margin-top: 0;
-            text-align: center;
-        }
-
-        label { 
-            font-weight: bold; 
-            font-size: 14px; 
-            display: block; 
-            margin-top: 15px;
-            margin-bottom: 5px;
-            color: #444;
-        }
+        h2 { color: #007BFF; font-size: 22px; margin-top: 0; text-align: center; }
+        label { font-weight: bold; font-size: 14px; display: block; margin-top: 15px; margin-bottom: 5px; color: #444; }
 
         input[type="file"] { 
             width: 100%; 
@@ -62,7 +46,7 @@
 
         textarea { 
             width: 100%; 
-            height: 130px; 
+            height: 160px; 
             padding: 12px; 
             border: 1px solid #ccc; 
             border-radius: 6px; 
@@ -101,13 +85,14 @@
 <div class="container">
     <h2>✈️ International Itinerary Time Manager 🏙️</h2>
     
-    <!-- Upload file section -->
-    <label for="fileInput">Option 1: Upload a text file (.txt or itinerary document)</label>
-    <input type="file" id="fileInput" onchange="loadFile(event)">
+    <!-- Upload multiple files section -->
+    <!-- Notice the word 'multiple' below: this lets you select all 6 files at once on your phone! -->
+    <label for="fileInput">Option 1: Upload text files (You can select all 6 at once!)</label>
+    <input type="file" id="fileInput" multiple onchange="loadMultipleFiles(event)">
 
-    <!-- Paste text section -->
-    <label for="itineraryInput">Option 2: Or paste flight details/text below</label>
-    <textarea id="itineraryInput" placeholder="Paste itinerary text here... e.g., Depart JFK @ 14:30 on 15 Nov"></textarea>
+    <!-- Paste or view loaded text section -->
+    <label for="itineraryInput">Option 2: Or paste/view combined flight details below</label>
+    <textarea id="itineraryInput" placeholder="Paste itinerary text here or select files above..."></textarea>
     
     <!-- Action button -->
     <button onclick="showLocalTime()">Show Current Local Time Info</button>
@@ -118,39 +103,54 @@
 </div>
 
 <script>
-    // LIST OF BACKGROUND IMAGES (Airplane, Skyscrapers, Airport, Travel view)
+    // List of background images for the slideshow
     const images = [
-        'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070', // New York Skyscrapers
-        'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074', // Airplane in clouds
-        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073', // Tropical beach destination
-        'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070'  // Dubai skyline
+        'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?q=80&w=2070',
+        'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074',
+        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073',
+        'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070'
     ];
 
     let currentIndex = 0;
 
-    // Function to rotate background images smoothly every 5 seconds
+    // Function to rotate background images smoothly
     function changeBackground() {
         document.body.style.backgroundImage = `url('${images[currentIndex]}')`;
         currentIndex = (currentIndex + 1) % images.length;
     }
 
-    // Start background slider immediately
     changeBackground();
-    setInterval(changeBackground, 5000); // Changes every 5000 milliseconds (5 seconds)
+    setInterval(changeBackground, 5000);
 
-    // Read uploaded text file
-    function loadFile(event) {
-        let file = event.target.files[0];
-        if (!file) return;
+    // This new function reads ALL selected files together
+    function loadMultipleFiles(event) {
+        let files = event.target.files;
+        if (!files || files.length === 0) return;
 
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById("itineraryInput").value = e.target.result;
-        };
-        reader.readAsText(file);
+        let combinedText = "";
+        let filesRead = 0;
+
+        // Loop through every file you selected on your phone
+        for (let i = 0; i < files.length; i++) {
+            let reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // Add a small divider header for each file so you know which is which
+                combinedText += "=== File: " + files[i].name + " ===\n";
+                combinedText += e.target.result + "\n\n";
+                
+                filesRead++;
+                // Once all files are finished reading, display them inside the text box
+                if (filesRead === files.length) {
+                    document.getElementById("itineraryInput").value = combinedText;
+                }
+            };
+            
+            reader.readAsText(files[i]);
+        }
     }
 
-    // Convert button action
+    // Function to show local time zone information
     function showLocalTime() {
         let userInput = document.getElementById("itineraryInput").value;
         let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -159,7 +159,7 @@
         let outputBox = document.getElementById("resultOutput");
         outputBox.innerHTML = "<strong>Your Local Time Zone:</strong> " + userTimeZone + 
                               "<br><strong>Current Local Time:</strong> " + currentLocalTime + 
-                              "<br><br><strong>Itinerary Details:</strong><br>" + userInput;
+                              "<br><br><strong>Combined Itinerary Details:</strong><br>" + userInput;
     }
 </script>
 
