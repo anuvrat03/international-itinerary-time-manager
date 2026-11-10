@@ -8,48 +8,62 @@
         /* Styling to make the page look clean and easy to read on your phone screen */
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; color: #333; }
         .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        textarea { width: 100%; height: 120px; padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input[type="file"] { margin-bottom: 15px; width: 100%; }
+        textarea { width: 100%; height: 120px; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         button { background-color: #007BFF; color: white; border: none; padding: 10px 15px; margin-top: 10px; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; }
         button:hover { background-color: #0056b3; }
         .output { margin-top: 20px; padding: 10px; background: #e9ecef; border-radius: 4px; white-space: pre-wrap; font-family: monospace; }
+        label { font-weight: bold; font-size: 14px; display: block; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>International Itinerary Time Manager</h2>
-    <p>Paste flight details or text containing times below:</p>
     
-    <!-- This is the box where you will type or paste your travel info -->
+    <!-- Upload file section -->
+    <label for="fileInput">Option 1: Upload a text file (.txt or itinerary document)</label>
+    <input type="file" id="fileInput" onchange="loadFile(event)">
+
+    <!-- Paste text section -->
+    <label for="itineraryInput">Option 2: Or paste flight details/text below</label>
     <textarea id="itineraryInput" placeholder="Paste itinerary text here..."></textarea>
     
-    <!-- This is the button you will tap to make it work -->
+    <!-- Action button -->
     <button onclick="showLocalTime()">Show Current Local Time Info</button>
 
     <h3>Result:</h3>
-    <!-- This box will show what the code produces -->
+    <!-- Output display box -->
     <div id="resultOutput" class="output">Your details will appear here...</div>
 </div>
 
 <script>
-    // This small program runs when you tap the button above
+    // This function automatically reads a file when you select it from your phone
+    function loadFile(event) {
+        let file = event.target.files[0];
+        if (!file) return;
+
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            // Put the text from the uploaded file directly into our text box
+            document.getElementById("itineraryInput").value = e.target.result;
+        };
+        reader.readAsText(file);
+    }
+
+    // This function runs when you tap the convert button
     function showLocalTime() {
-        // Grab what you typed in the box
         let userInput = document.getElementById("itineraryInput").value;
-        
-        // Find your phone's current time zone
         let userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        
-        // Get the exact current local date and time
         let currentLocalTime = new Date().toLocaleString();
 
-        // Show the results in the output box on the screen
         let outputBox = document.getElementById("resultOutput");
         outputBox.innerHTML = "<strong>Your Local Time Zone:</strong> " + userTimeZone + 
                               "<br><strong>Current Local Time:</strong> " + currentLocalTime + 
-                              "<br><br><strong>You pasted:</strong><br>" + userInput;
+                              "<br><br><strong>Itinerary Details:</strong><br>" + userInput;
     }
 </script>
 
 </body>
 </html>
+
